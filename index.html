@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>橘仔的阅读记录</title>
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoi5qmY5LuU55qE6ZiF6K+76K6w5b2VIiwic2hvcnRfbmFtZSI6IuapmOS7lCIsInN0YXJ0X3VybCI6Ii8iLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImJhY2tncm91bmRfY29sb3IiOiIjRkZGRUZBIiwidGhlbWVfY29sb3IiOiIjQTVDMzlBIiwiaWNvbnMiOlt7InNyYyI6ImRhdGE6aW1hZ2Uvc3ZnK3htbCw8c3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnPjx0ZXh0IHg9JzAnIHk9JzgwJyBmb250LXNpemU9JzkwJyBmaWxsPScjQTVDMzlBJz7wn5OWPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        body {
+            background-color: #FBF7EF;
+            color: #4A4741;
+            padding: 16px;
+            padding-bottom: 72px;
+            line-height: 1.6;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap:10px;
+        }
+        h1 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #3F3C36;
+        }
+        button {
+            background-color: #A5C39A;
+            color: #FFFFFF;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size:14px;
+        }
+        button.secondary {
+            background-color: #F3E9D4;
+            color: #4A4741;
+        }
+        .card {
+            background: #FFFEFA;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 14px rgba(0,0,0,0.05);
+        }
+        .card h2 {
+            font-size: 18px;
+            margin-bottom:12px;
+            color:#3F3C36;
+            display:flex;
+            gap:6px;
+            align-items:center;
+        }
+        .form-item {
+            margin-bottom:12px;
+        }
+        label {
+            display:block;
+            font-size:14px;
+            margin-bottom:4px;
+            color:#6E6A62;
+        }
+        input, select, textarea {
+            width:100%;
+            border:1px solid #E9E0D0;
+            border-radius:10px;
+            padding:10px;
+            font-size:15px;
+            background:#FFFDF8;
+        }
+        /* 勾选框不受全局 input 宽度规则影响 */
+        input[type="checkbox"] {
+            width:auto;
+            height:auto;
+            padding:0;
+            border:none;
+            border-radius:0;
+            flex-shrink:0;
+        }
+        textarea {
+            min-height:80px;
+            resize:vertical;
+        }
+        .tip {
+            font-size:13px;
+            color:#667085;
+            margin:8px 0;
+        }
+        .grid-row {
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:12px;
+        }
+        @media (max-width:600px) {
+            .grid-row {
+                grid-template-columns:1fr;
+            }
+        }
+        .progress-bar-bg {
+            width:100%;
+            height:10px;
+            background:#F1E9DA;
+            border-radius:99px;
+            overflow:hidden;
+            margin:8px 0;
+        }
+        .progress-bar-fill {
+            height:100%;
+            background:linear-gradient(90deg,#C6D8B0,#A5C39A);
+        }
+
+        /* 月份大折叠面板 */
+        .month-collapse {
+            border:1px solid #EFE6D5;
+            border-radius:14px;
+            margin-top:16px;
+            overflow:hidden;
+        }
+        .month-header {
+            padding:14px;
+            background:#F5EEDF;
+            cursor:pointer;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+        .month-header:hover {
+            background:#EFE5D0;
+        }
+        .month-body {
+            padding:14px;
+            border-top:1px solid #EFE6D5;
+        }
+
+        /* 书籍卡片折叠 */
+        .book-collapse {
+            border:1px solid #F1EBDE;
+            border-radius:12px;
+            margin-top:10px;
+            overflow:hidden;
+        }
+        .book-header {
+            padding:12px;
+            background:#FBF7EC;
+            cursor:pointer;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+        .book-header:hover {
+            background:#F6EFDF;
+        }
+        .book-body {
+            padding:12px;
+            border-top:1px solid #F1EBDE;
+        }
+        .daily-task-item {
+            display:flex;
+            gap:8px;
+            align-items:center;
+            padding:4px 0;
+        }
+        .task-done-text{
+            text-decoration: line-through;
+            color:#888;
+        }
+
+        /* 周复盘折叠卡片 */
+        .week-collapse{
+            border:1px solid #F1EBDE;
+            border-radius:12px;
+            margin-top:8px;
+            overflow:hidden;
+        }
+        .week-header{
+            padding:10px 12px;
+            background:#FBF7EC;
+            cursor:pointer;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+        .week-body{
+            padding:12px;
+            border-top:1px solid #F1EBDE;
+        }
+        .btn-group {
+            display:flex;
+            gap:8px;
+            margin-top:10px;
+            flex-wrap:wrap;
+        }
+
+        /* 手机端适配：按钮竖排、书卡头部允许换行 */
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            header > div {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            header button {
+                width: 100%;
+            }
+            .book-header {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+        }
+
+        /* 底部导航 Tab */
+        .bottom-nav {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255,254,250,0.96);
+            border-top: 1px solid #EFE6D5;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 6px 8px 10px;
+        }
+        .nav-item {
+            flex: 1;
+            max-width: 130px;
+            border: none;
+            background: transparent;
+            color: #8A857A;
+            font-size: 13px;
+            padding: 6px 4px 4px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            cursor: pointer;
+            transition: all .15s;
+        }
+        .nav-item .nav-icon {
+            font-size: 18px;
+            line-height: 1;
+        }
+        .nav-item.active {
+            color: #6F8F62;
+            background: rgba(169,199,155,0.18);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>📖 橘仔的阅读记录 <span style="font-size:12px;font-weight:400;color:#B8B0A0;">v2.1</span></h1>
+    <div>
+        <button onclick="exportMarkdown()">导出Markdown</button>
+        <button onclick="exportData()">导出备份JSON</button>
+        <button class="secondary" onclick="importData()">导入备份JSON</button>
+    </div>
+</header>
+
+<!-- 全局搜索 -->
+<div class="card">
+    <h2>🔍 搜索书籍</h2>
+    <input id="globalSearchInput" type="text" placeholder="输入书名或标签关键词">
+    <div id="globalSearchResult"></div>
+</div>
+
+<!-- 阶段目标面板 -->
+<div class="card">
+    <h2>🎯 当前阶段目标</h2>
+    <div class="form-item">
+        <label>阶段名称（例如：2026.09–2026.12）</label>
+        <input id="phaseName" type="text" value="2026.09–2026.12">
+    </div>
+    <div class="grid-row">
+        <div>
+            <label>阶段目标本数</label>
+            <input id="phaseTargetBook" type="number" value="12">
+        </div>
+        <div>
+            <label>阶段已读完本数</label>
+            <input id="phaseFinishedBook" type="number" value="0">
+        </div>
+    </div>
+    <div class="progress-bar-bg">
+        <div id="phaseProgressFill" class="progress-bar-fill" style="width:0%"></div>
+    </div>
+    <div class="tip">阶段进度自动计算，可新建多个月份阅读记录存档</div>
+    <button style="margin-top:10px;" onclick="addNewMonth()">➕ 新增月度阅读记录</button>
+</div>
+
+<!-- 月份列表容器 -->
+<div id="monthListWrap"></div>
+
+<!-- 搁置书籍名录（全局，独立） -->
+<div class="card" id="shelve-section">
+    <h2>⏸️ 搁置书籍名录</h2>
+    <div id="shelveList"></div>
+    <div style="margin-top:14px;border-top:1px solid #eef2f7;padding-top:14px;">
+        <h3 style="font-size:16px;margin-bottom:10px">新增搁置书籍</h3>
+        <div class="form-item">
+            <label>书名</label>
+            <input id="shelveBookName" type="text">
+        </div>
+        <div class="form-item">
+            <label>搁置原因</label>
+            <textarea id="shelveReason"></textarea>
+        </div>
+        <div class="form-item">
+            <label>状态</label>
+            <select id="shelveStatus">
+                <option>可以重启</option>
+                <option>弃读</option>
+            </select>
+        </div>
+        <div class="form-item">
+            <label>季度复盘已核对
+                <span class="tip">（规则：每季度统一回顾搁置清单，判断是否重启阅读；弃读书籍不再纳入后续阅读计划）</span>
+            </label>
+            <select id="shelveQuarterCheck">
+                <option>否</option>
+                <option>是</option>
+            </select>
+        </div>
+        <button onclick="addShelveBook()">添加搁置记录</button>
+    </div>
+</div>
+
+<!-- 规则查阅 -->
+<div class="card">
+    <h2>📜 阅读规则查阅</h2>
+    <div class="tip" style="white-space:pre-line;">
+✅ 并行阅读：日常最多3本，临时最多4本，禁止开第5本。不适就减书。
+✅ 阅读模式：每月可选【自由阅读】/【主题阅读】（自定义阅读主题）
+✅ 单本书计划：可开启分天小目标，手动添加自定义每日阅读任务，完成勾选；薄书可不启用。
+✅ 书籍标签：支持预设标签+自定义多标签；书籍类型自由填写。
+✅ 折叠逻辑：月份整体可收拢；在读/计划书籍默认展开，读完/搁置默认收拢；周复盘卡片独立折叠。
+✅ 搁置名录：读到1/4评估深度。好书继续读完计入目标；差书搁置登记。每季度复盘搁置清单。
+✅ 复盘：周复盘自动生成日期命名；月度复盘归档在当月记录内。定期导出JSON备份。
+✅ 进度：短期阅读下滑属于正常波动，不强制补缺口；连续3周低迷，再谨慎调整当月书单。
+    </div>
+</div>
+
+<nav class="bottom-nav">
+    <button class="nav-item active" data-target="top"><span class="nav-icon">📊</span>总览</button>
+    <button class="nav-item" data-target="month"><span class="nav-icon">📅</span>月度</button>
+    <button class="nav-item" data-target="book"><span class="nav-icon">📚</span>书籍</button>
+    <button class="nav-item" data-target="review"><span class="nav-icon">📝</span>复盘</button>
+    <button class="nav-item" data-target="shelve"><span class="nav-icon">⏸️</span>搁置</button>
+</nav>
+<script>
+const STORAGE_KEY = "orange_read_record_data";
+let data = normalizeData(JSON.parse(localStorage.getItem(STORAGE_KEY)) || {});
+
+// 数据结构兜底：防止旧备份/异常数据导致白屏或渲染错误
+function normalizeData(d){
+    if(!d || typeof d !== "object") d = {};
+    if(!d.phase || typeof d.phase !== "object") d.phase = {};
+    d.phase.name = d.phase.name || "2026.09–2026.12";
+    const pt = Number(d.phase.target);
+    d.phase.target = isNaN(pt) ? 12 : pt;
+    const pf = Number(d.phase.finished);
+    d.phase.finished = isNaN(pf) ? 0 : pf;
+    if(!Array.isArray(d.months)) d.months = [];
+    if(!Array.isArray(d.shelveBooks)) d.shelveBooks = [];
+    d.months.forEach(m=>{
+        if(!m || typeof m !== "object") return;
+        if(!Array.isArray(m.books)) m.books = [];
+        if(!Array.isArray(m.weeks)) m.weeks = [];
+        if(m.collapse === undefined) m.collapse = true;
+        m.books.forEach(b=>{
+            if(!b || typeof b !== "object") return;
+            if(!Array.isArray(b.dailyTasks)) b.dailyTasks = [];
+            if(b.collapse === undefined) b.collapse = !(b.status==="已读完"||b.status==="搁置");
+            if(b.enableDailyPlan === undefined) b.enableDailyPlan = false;
+            if(b.author === undefined) b.author = "";
+            if(b.translator === undefined) b.translator = "";
+            if(b.cover === undefined) b.cover = "";
+        });
+        m.weeks.forEach(w=>{ if(w && w.collapse===undefined) w.collapse = true; });
+    });
+    return d;
+}
+
+// HTML 转义：防止用户输入特殊字符破坏页面排版
+function esc(s){
+    return String(s==null?"":s)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#39;");
+}
+
+// 保存本地
+function saveLocal(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    renderAll();
+}
+
+//全局渲染
+function renderAll(){
+    //阶段目标
+    document.getElementById("phaseName").value = data.phase.name;
+    document.getElementById("phaseTargetBook").value = data.phase.target;
+    document.getElementById("phaseFinishedBook").value = data.phase.finished;
+    const pTarget = Number(data.phase.target)||0;
+    const pFinished = Number(data.phase.finished)||0;
+    const pct = pTarget>0 ? Math.min(100,(pFinished/pTarget)*100) : 0;
+    const fill = document.getElementById("phaseProgressFill");
+    fill.style.width = pct+"%";
+    fill.style.background = pct>=100 ? "#22c55e" : (pct>=50 ? "#409cf0" : "#94a3b8");
+
+    renderMonthList();
+    renderShelveList();
+}
+
+//渲染月份列表
+function renderMonthList(){
+    const wrap = document.getElementById("monthListWrap");
+    wrap.innerHTML = "";
+    data.months.forEach((monthItem,mid)=>{
+        if(monthItem.collapse === undefined){
+            monthItem.collapse = true;
+        }
+        const monthBooks = monthItem.books||[];
+        const monthFinishedCnt = monthBooks.filter(b=>b.status==="已读完").length;
+        const monthReadingCnt = monthBooks.filter(b=>b.status==="在读").length;
+        let themeInputHtml = "";
+        if(monthItem.readMode === "theme"){
+            themeInputHtml = `
+            <div class="form-item">
+                <label>本月阅读主题</label>
+                <input value="${esc(monthItem.theme)}" onchange="updateMonthField(${mid},'theme',this.value)">
+            </div>`;
+        }
+
+        //渲染本月书籍
+        let bookHtml = "";
+        if(monthItem.books && monthItem.books.length>0){
+            monthItem.books.forEach((bk,bidx)=>{
+                if(bk.collapse === undefined){
+                    bk.collapse = !(bk.status==="已读完" || bk.status==="搁置");
+                }
+                const bkTotal = Number(bk.totalPage)||0;
+                const bkRead = Number(bk.readPage)||0;
+                const bkReadPct = bkTotal>0 ? Math.min(100,Math.round(bkRead/bkTotal*100)) : 0;
+                const doneCnt = (bk.dailyTasks||[]).filter(t=>t.done).length;
+                let dailyHtml = `
+                    <div class="form-item" style="margin-top:12px;border-top:1px solid #eef2f7;padding-top:12px;">
+                        <label>启用分天阅读小目标（勾选开启；添加任务后自动开启）</label>
+                        <input type="checkbox" ${bk.enableDailyPlan?"checked":""} onchange="updateBookField(${mid},${bidx},'enableDailyPlan',this.checked)">
+                    </div>`;
+                if(bk.enableDailyPlan){
+                    dailyHtml += `<div style="margin-top:10px;" id="newTaskWrap-${mid}-${bidx}">
+                        <div class="form-item" style="display:flex;gap:8px;align-items:center;">
+                            <input id="newTaskDate${mid}-${bidx}" type="date" style="flex:1">
+                            <input id="newTaskPages${mid}-${bidx}" type="number" placeholder="看多少页" style="flex:1" onchange="autoBookTask(${mid},${bidx})">
+                            <button class="secondary" onclick="addBookTask(${mid},${bidx})">添加</button>
+                        </div>`;
+                    if(bk.dailyTasks && bk.dailyTasks.length>0){
+                        bk.dailyTasks.forEach((task, tid)=>{
+                            dailyHtml += `
+                            <div class="daily-task-item">
+                                <input type="checkbox" ${task.done?"checked":""} onchange="toggleTaskDone(${mid},${bidx},${tid})">
+                                <span class="${task.done ? 'task-done-text':''}">${esc(task.content)}</span>
+                                <button class="secondary" style="padding:2px 6px;font-size:12px" onclick="delBookTask(${mid},${bidx},${tid})">删除</button>
+                            </div>`;
+                        })
+                    }
+                    dailyHtml += `<div class="tip" style="margin:6px 0 0;">任务进度：已完成 ${doneCnt} / ${bk.dailyTasks.length}</div>`;
+                    dailyHtml += `</div>`;
+                }
+                bookHtml += `
+                <div class="book-collapse" id="bookCard-${mid}-${bidx}">
+                    <div class="book-header" onclick="toggleBookCollapse(${mid},${bidx})">
+                        <div style="display:flex;gap:10px;align-items:center;min-width:0;">
+                            ${bk.cover?`<img src="${esc(bk.cover)}" style="width:36px;height:50px;object-fit:cover;border-radius:4px;flex-shrink:0;" onerror="this.style.display='none'">`:""}
+                            <div>
+                                <strong>${esc(bk.name)}</strong>${bk.author?`<span class="tip"> ｜ ${esc(bk.author)}</span>`:""}
+                                <div class="tip" style="margin:0;">状态：${esc(bk.status)}｜类型：${esc(bk.bookType)}｜标签：${esc(bk.tags)}</div>
+                            </div>
+                        </div>
+                        <div>${bk.collapse ? '▼展开':'▶收拢'}</div>
+                    </div>
+                    ${bk.collapse?`<div class="book-body">
+                        <div class="form-item">
+                            <label>书籍类型</label>
+                            <input value="${esc(bk.bookType)}" onchange="updateBookField(${mid},${bidx},'bookType',this.value)">
+                        </div>
+                        <div class="form-item">
+                            <label>价值标签</label>
+                            <input value="${esc(bk.tags)}" onchange="updateBookField(${mid},${bidx},'tags',this.value)">
+                        </div>
+                        <div class="form-item">
+                            <label>深度预判</label>
+                            <select onchange="updateBookField(${mid},${bidx},'depth',this.value)">
+                                <option ${bk.depth==="深度读物"?"selected":""}>深度读物</option>
+                                <option ${bk.depth==="普通读物"?"selected":""}>普通读物</option>
+                                <option ${bk.depth==="轻松调剂读物"?"selected":""}>轻松调剂读物</option>
+                            </select>
+                        </div>
+                        <div class="grid-row">
+                            <div class="form-item">
+                                <label>作者</label>
+                                <input value="${esc(bk.author)}" onchange="updateBookField(${mid},${bidx},'author',this.value)">
+                            </div>
+                            <div class="form-item">
+                                <label>译者</label>
+                                <input value="${esc(bk.translator)}" onchange="updateBookField(${mid},${bidx},'translator',this.value)">
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>封面图片链接</label>
+                            <input value="${esc(bk.cover)}" onchange="updateBookField(${mid},${bidx},'cover',this.value)">
+                        </div>
+                        <div class="form-item">
+                            <label>阅读状态</label>
+                            <select onchange="updateBookField(${mid},${bidx},'status',this.value)">
+                                <option ${bk.status==="计划中"?"selected":""}>计划中</option>
+                                <option ${bk.status==="在读"?"selected":""}>在读</option>
+                                <option ${bk.status==="已读完"?"selected":""}>已读完</option>
+                                <option ${bk.status==="搁置"?"selected":""}>搁置</option>
+                            </select>
+                        </div>
+                        <div class="grid-row">
+                            <div class="form-item">
+                                <label>总页数</label>
+                                <input type="number" value="${bk.totalPage||''}" onchange="updateBookField(${mid},${bidx},'totalPage',this.value)">
+                            </div>
+                            <div class="form-item">
+                                <label>已读页数</label>
+                                <input type="number" value="${bk.readPage||''}" onchange="updateBookField(${mid},${bidx},'readPage',this.value)">
+                            </div>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width:${bkReadPct}%"></div>
+                        </div>
+                        <div class="tip">阅读进度：${bkReadPct}%（已读 ${bkRead} / ${bkTotal} 页）</div>
+                        ${dailyHtml}
+                        <div class="grid-row">
+                            <div class="form-item">
+                                <label>阅读开始日期</label>
+                                <input type="date" value="${bk.planStart||''}" onchange="updateBookField(${mid},${bidx},'planStart',this.value)">
+                            </div>
+                            <div class="form-item">
+                                <label>阅读结束日期</label>
+                                <input type="date" value="${bk.planEnd||''}" onchange="updateBookField(${mid},${bidx},'planEnd',this.value)">
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>本书阅读时长</label>
+                            <input value="${esc(bk.readTime)}" onchange="updateBookField(${mid},${bidx},'readTime',this.value)">
+                        </div>
+                        <div class="form-item">
+                            <label>读后自评</label>
+                            <textarea onchange="updateBookField(${mid},${bidx},'review',this.value)">${esc(bk.review)}</textarea>
+                        </div>
+                        <div class="btn-group">
+                            <button class="secondary" onclick="exportBookMarkdown(${mid},${bidx})">导出本书</button>
+                            <button class="secondary" onclick="deleteBook(${mid},${bidx})">删除本书</button>
+                        </div>
+                    </div>`:""}
+                </div>`;
+            })
+        }
+
+        //渲染周复盘
+        let weekHtml = "";
+        if(monthItem.weeks && monthItem.weeks.length>0){
+            monthItem.weeks.forEach((wk,widx)=>{
+                if(wk.collapse===undefined) wk.collapse=true;
+                weekHtml += `
+                <div class="week-collapse">
+                    <div class="week-header" onclick="toggleWeekCollapse(${mid},${widx})">
+                        <strong>${esc(wk.title)}</strong>
+                        <span>${wk.collapse?'▼':'▶'}</span>
+                    </div>
+                    ${wk.collapse?`<div class="week-body">
+                        <div class="tip">阅读时长：${esc(wk.time)}</div>
+                        <div class="form-item">
+                            <label>复盘内容
+                                <span class="tip">周复盘要点：本周阅读状态、读书阻力、收获感悟、下周阅读调整计划</span>
+                            </label>
+                            <textarea onchange="updateWeekField(${mid},${widx},'content',this.value)">${esc(wk.content)}</textarea>
+                        </div>
+                        <button class="secondary" onclick="delWeekLog(${mid},${widx})">删除本条周复盘</button>
+                    </div>`:""}
+                </div>`;
+            })
+        }
+
+        const div = document.createElement("div");
+        div.className="month-collapse";
+        div.innerHTML=`
+            <div class="month-header" onclick="toggleMonthCollapse(${mid})">
+                <h3 style="margin:0">
+                    <input style="border:none;background:transparent;font-size:18px;font-weight:bold;width:220px" value="${esc(monthItem.name)}" onclick="event.stopPropagation()" onchange="updateMonthField(${mid},'name',this.value)">
+                </h3>
+                <span style="display:flex;align-items:center;gap:10px;">
+                    <span class="tip" style="margin:0;">读完 ${monthFinishedCnt} 本 · 在读 ${monthReadingCnt} 本</span>
+                    <span>${monthItem.collapse ? '▼展开':'▶收拢'}</span>
+                </span>
+            </div>
+            ${monthItem.collapse?`<div class="month-body">
+                <div class="form-item">
+                    <label>阅读模式</label>
+                    <div style="display:flex;gap:16px;margin-top:6px;">
+                        <label style="width:auto;"><input type="radio" name="rm${mid}" value="free" ${monthItem.readMode==="free"?"checked":""} onchange="setReadMode(${mid},'free')">自由阅读</label>
+                        <label style="width:auto;"><input type="radio" name="rm${mid}" value="theme" ${monthItem.readMode==="theme"?"checked":""} onchange="setReadMode(${mid},'theme')">主题阅读</label>
+                    </div>
+                </div>
+                ${themeInputHtml}
+
+                <div style="margin-top:16px;border-top:1px solid #eef2f7;padding-top:12px;">
+                    <h3 style="font-size:16px;margin-bottom:10px">本月想读：</h3>
+                    ${bookHtml||"<div class='tip'>暂无书籍</div>"}
+                    <div style="margin-top:14px;border-top:1px solid #eef2f7;padding-top:14px;">
+                        <h3 style="font-size:16px;margin-bottom:10px">目前正在读：</h3>
+                        <div class="form-item">
+                            <label>书名</label>
+                            <input id="addBookName${mid}" type="text" placeholder="输入书名">
+                        </div>
+                        <div class="form-item">
+                            <label>作者</label>
+                            <input id="addBookAuthor${mid}" type="text" placeholder="作者姓名">
+                        </div>
+                        <div class="form-item">
+                            <label>译者（外国书籍填写，非译著可留空）</label>
+                            <input id="addBookTranslator${mid}" type="text" placeholder="译者姓名">
+                        </div>
+                        <div class="form-item">
+                            <label>封面图片（粘贴图片链接，或点"搜索封面"自动查找）</label>
+                            <div style="display:flex;gap:8px;">
+                                <input id="addCoverUrl${mid}" type="text" placeholder="https://... 图片地址" oninput="renderCoverPreview(${mid})">
+                                <button class="secondary" onclick="searchCover(${mid})">搜索封面</button>
+                            </div>
+                            <div id="addCoverPreview${mid}" style="margin-top:8px;"></div>
+                        </div>
+                        <div class="form-item">
+                            <label>书籍类型（自定义，如小说/历史/社科）</label>
+                            <input id="addBookType${mid}" type="text" placeholder="小说">
+                        </div>
+                        <div class="form-item">
+                            <label>价值标签（推荐下拉，可自行补充，逗号分隔多标签）</label>
+                            <div class="grid-row">
+                                <select id="addTagSelect${mid}">
+                                    <option value="">--选择推荐标签--</option>
+                                    <option>思辨认知</option>
+                                    <option>情感审美</option>
+                                    <option>猎奇新知</option>
+                                    <option>实用技能</option>
+                                </select>
+                                <input id="addTagCustom${mid}" type="text" placeholder="自定义标签，多标签逗号隔开">
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>深度预判</label>
+                            <select id="addBookDepth${mid}">
+                                <option>深度读物</option>
+                                <option>普通读物</option>
+                                <option>轻松调剂读物</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>阅读状态</label>
+                            <select id="addBookStatus${mid}">
+                                <option>计划中</option>
+                                <option>在读</option>
+                                <option>已读完</option>
+                                <option>搁置</option>
+                            </select>
+                        </div>
+                        <div class="grid-row">
+                            <div class="form-item">
+                                <label>书籍总页数</label>
+                                <input id="addTotalPage${mid}" type="number" placeholder="全书总页数" oninput="renderAddProgress(${mid})">
+                            </div>
+                            <div class="form-item">
+                                <label>已读页数</label>
+                                <input id="addReadPage${mid}" type="number" placeholder="已读页数" oninput="renderAddProgress(${mid})">
+                            </div>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="addProgressFill${mid}" style="width:0%"></div>
+                        </div>
+                        <div class="tip" id="addProgressTip${mid}">阅读进度：—（填写总页数后自动计算）</div>
+                        <div class="form-item">
+                            <label>启用分天阅读小目标（勾选开启；添加任务后自动开启）</label>
+                            <input type="checkbox" id="enableDailyPlan${mid}">
+                        </div>
+                        <div class="form-item">
+                            <label>阅读任务（先选日期，再填页数，填完自动生成）</label>
+                            <div style="display:flex;gap:8px;align-items:center;">
+                                <input id="addTaskDate${mid}" type="date" style="flex:1">
+                                <input id="addTaskPages${mid}" type="number" placeholder="看多少页" style="flex:1" onchange="autoDraftTask(${mid})">
+                                <button class="secondary" onclick="addDraftTask(${mid})">添加</button>
+                            </div>
+                            <div id="addTaskList${mid}" style="margin-top:6px;"></div>
+                        </div>
+                        <div class="grid-row">
+                            <div>
+                                <label>阅读开始日期</label>
+                                <input id="addPlanStart${mid}" type="date">
+                            </div>
+                            <div>
+                                <label>阅读结束日期</label>
+                                <input id="addPlanEnd${mid}" type="date">
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>本书阅读时长（如：2周 / 20小时）</label>
+                            <input id="addReadTime${mid}" type="text" placeholder="阅读这本书花了多长时间">
+                        </div>
+                        <div class="form-item">
+                            <label>读后评价
+                                <div class="tip">模板参考：
+核心要点：本书 2～3 个打动 / 颠覆你的观点
+碰撞思考：哪些观点和原有想法一致 / 冲突，理由
+价值复盘：是否达到预期深度；
+延伸疑问：还有哪些想继续探究的内容
+                                </div>
+                            </label>
+                            <textarea id="addBookReview${mid}" placeholder="在这里填写读后评价"></textarea>
+                        </div>
+                        <button onclick="addMonthBook(${mid})">添加本书</button>
+                    </div>
+                </div>
+
+                <div style="margin-top:16px;border-top:1px solid #eef2f7;padding-top:12px;">
+                    <h3 style="font-size:16px;margin-bottom:10px">周度阅读复盘</h3>
+                    ${weekHtml||"<div class='tip'>暂无周复盘记录</div>"}
+                    <div style="margin-top:14px;border-top:1px solid #eef2f7;padding-top:14px;">
+                        <h4 style="font-size:15px;margin-bottom:8px">新增周复盘</h4>
+                        <div class="grid-row">
+                            <div class="form-item">
+                                <label>本周起始日期</label>
+                                <input id="weekStart${mid}" type="date" oninput="autoWeekTitle(${mid})">
+                            </div>
+                            <div class="form-item">
+                                <label>本周结束日期</label>
+                                <input id="weekEnd${mid}" type="date" oninput="autoWeekTitle(${mid})">
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>复盘标题（自动生成，可手动修改）</label>
+                            <input id="weekTitle${mid}" type="text">
+                        </div>
+                        <div class="form-item">
+                            <label>本周阅读总时长</label>
+                            <input id="weekTime${mid}" type="text">
+                        </div>
+                        <div class="form-item">
+                            <label>复盘内容
+                                <span class="tip">周复盘要点：本周阅读状态、读书阻力、收获感悟、下周阅读调整计划</span>
+                            </label>
+                            <textarea id="weekContent${mid}"></textarea>
+                        </div>
+                        <button onclick="addWeekLog(${mid})">保存周复盘</button>
+                    </div>
+                </div>
+
+                <div style="margin-top:16px;border-top:1px solid #eef2f7;padding-top:12px;">
+                    <h3 style="font-size:16px;margin-bottom:10px" class="review-title">月度综合复盘</h3>
+                    <div class="form-item">
+                        <label>本月类别平衡、主题完成情况、踩坑总结
+                            <span class="tip">月度复盘要点：本月主题完成度、书籍类型分布、阅读精力波动、下月书单调整</span>
+                        </label>
+                        <textarea id="monthReview${mid}" onchange="updateMonthField(${mid},'review',this.value)">${esc(monthItem.review)}</textarea>
+                    </div>
+                </div>
+                <div style="margin-top:12px;text-align:right">
+                    <button class="secondary" onclick="deleteMonth(${mid})">删除此月份记录</button>
+                </div>
+            </div>`:""}
+        `;
+        wrap.appendChild(div);
+    })
+}
+
+//月份操作
+function addNewMonth(){
+    const newMonth = {
+        name:"月度阅读记录",
+        collapse:true,
+        readMode:"free",
+        theme:"",
+        books:[],
+        weeks:[],
+        review:""
+    };
+    data.months.push(newMonth);
+    saveLocal();
+}
+function toggleMonthCollapse(mid){
+    data.months[mid].collapse = !data.months[mid].collapse;
+    saveLocal();
+}
+function setReadMode(mid,mode){
+    data.months[mid].readMode = mode;
+    saveLocal();
+}
+function updateMonthField(mid,key,val){
+    data.months[mid][key] = val;
+    saveLocal();
+}
+function deleteMonth(mid){
+    if(!confirm("确定删除这个月份全部记录？"))return;
+    data.months.splice(mid,1);
+    saveLocal();
+}
+
+//书籍任务相关
+const draftTasks = {}; // 暂存"添加书籍"表单中的阅读任务（按月份区分）
+
+// 任务显示文本：有日期页数显示"09/13 看50页"，旧任务显示原内容
+function fmtTaskLabel(t){
+    if(t && t.date){
+        return `${t.date.slice(5).replace("-","/")} 看${t.pages||""}页`.trim();
+    }
+    return t.content || "";
+}
+function autoDraftTask(mid){
+    const date = document.getElementById(`addTaskDate${mid}`).value;
+    const pages = document.getElementById(`addTaskPages${mid}`).value;
+    if(date && pages) addDraftTask(mid);
+}
+function addDraftTask(mid){
+    const date = document.getElementById(`addTaskDate${mid}`).value;
+    const pages = document.getElementById(`addTaskPages${mid}`).value.trim();
+    if(!date && !pages) return;
+    if(!draftTasks[mid]) draftTasks[mid] = [];
+    draftTasks[mid].push({date, pages:Number(pages)||0, done:false});
+    document.getElementById(`addTaskDate${mid}`).value = "";
+    document.getElementById(`addTaskPages${mid}`).value = "";
+    document.getElementById(`enableDailyPlan${mid}`).checked = true; // 有任务自动开启分天计划
+    renderDraftTasks(mid);
+    const listWrap = document.getElementById(`addTaskList${mid}`);
+    if(listWrap && listWrap.children.length){
+        listWrap.scrollIntoView({behavior:"smooth", block:"nearest"});
+    }
+}
+function renderDraftTasks(mid){
+    const wrap = document.getElementById(`addTaskList${mid}`);
+    if(!wrap) return;
+    const list = draftTasks[mid]||[];
+    if(!list.length){ wrap.innerHTML = ""; wrap.style.cssText=""; return; }
+    wrap.style.cssText = "margin-top:6px;background:#f8fafc;border:1px solid #eef2f7;border-radius:8px;padding:6px 10px;";
+    wrap.innerHTML = list.map((t,i)=>
+        `<div class="daily-task-item">
+            <input type="checkbox" ${t.done?"checked":""} onchange="toggleDraftTask(${mid},${i})">
+            <span class="${t.done ? 'task-done-text':''}">${esc(fmtTaskLabel(t))}</span>
+            <button class="secondary" style="padding:2px 6px;font-size:12px" onclick="delDraftTask(${mid},${i})">删除</button>
+        </div>`).join("");
+}
+function delDraftTask(mid,idx){
+    draftTasks[mid].splice(idx,1);
+    renderDraftTasks(mid);
+}
+function toggleDraftTask(mid,idx){
+    draftTasks[mid][idx].done = !draftTasks[mid][idx].done;
+    renderDraftTasks(mid);
+}
+function autoBookTask(mid,bidx){
+    const date = document.getElementById(`newTaskDate${mid}-${bidx}`).value;
+    const pages = document.getElementById(`newTaskPages${mid}-${bidx}`).value;
+    if(date && pages) addBookTask(mid,bidx);
+}
+function addBookTask(mid,bidx){
+    const date = document.getElementById(`newTaskDate${mid}-${bidx}`).value;
+    const pages = document.getElementById(`newTaskPages${mid}-${bidx}`).value.trim();
+    if(!date && !pages) return;
+    const bk = data.months[mid].books[bidx];
+    if(!bk.dailyTasks) bk.dailyTasks = [];
+    bk.dailyTasks.push({date, pages:Number(pages)||0, content:fmtTaskLabel({date,pages:Number(pages)||0}), done:false});
+    saveLocal();
+    requestAnimationFrame(()=>{
+        const wrap = document.getElementById(`newTaskWrap-${mid}-${bidx}`);
+        if(wrap) wrap.scrollIntoView({behavior:"smooth", block:"nearest"});
+    });
+}
+function toggleTaskDone(mid,bidx,tid){
+    data.months[mid].books[bidx].dailyTasks[tid].done = !data.months[mid].books[bidx].dailyTasks[tid].done;
+    saveLocal();
+}
+function delBookTask(mid,bidx,tid){
+    data.months[mid].books[bidx].dailyTasks.splice(tid,1);
+    saveLocal();
+}
+
+//书籍相关
+function toggleBookCollapse(mid,bidx){
+    data.months[mid].books[bidx].collapse = !data.months[mid].books[bidx].collapse;
+    saveLocal();
+}
+function updateBookField(mid,bidx,key,val){
+    data.months[mid].books[bidx][key] = val;
+    saveLocal();
+}
+function deleteBook(mid,bidx){
+    if(!confirm("确定删除这本书？"))return;
+    data.months[mid].books.splice(bidx,1);
+    saveLocal();
+}
+function addMonthBook(mid){
+    const name = document.getElementById(`addBookName${mid}`).value.trim();
+    if(!name) return alert("请填写书名");
+    const tagSel = document.getElementById(`addTagSelect${mid}`).value;
+    const tagCus = document.getElementById(`addTagCustom${mid}`).value.trim();
+    let finalTags = [];
+    if(tagSel) finalTags.push(tagSel);
+    if(tagCus) finalTags.push(tagCus);
+    const draftList = draftTasks[mid]||[];
+    const newStatus = document.getElementById(`addBookStatus${mid}`).value;
+
+    const bookObj = {
+        name,
+        author:document.getElementById(`addBookAuthor${mid}`).value.trim(),
+        translator:document.getElementById(`addBookTranslator${mid}`).value.trim(),
+        cover:document.getElementById(`addCoverUrl${mid}`).value.trim(),
+        bookType:document.getElementById(`addBookType${mid}`).value.trim(),
+        tags:finalTags.join(","),
+        depth:document.getElementById(`addBookDepth${mid}`).value,
+        totalPage:Number(document.getElementById(`addTotalPage${mid}`).value||0),
+        readPage:Number(document.getElementById(`addReadPage${mid}`).value||0),
+        planStart:document.getElementById(`addPlanStart${mid}`).value,
+        planEnd:document.getElementById(`addPlanEnd${mid}`).value,
+        status:newStatus,
+        enableDailyPlan:document.getElementById(`enableDailyPlan${mid}`).checked || draftList.length>0,
+        readTime:document.getElementById(`addReadTime${mid}`).value.trim(),
+        review:document.getElementById(`addBookReview${mid}`).value,
+        dailyTasks:draftList.map(t=>({date:t.date, pages:t.pages, content:fmtTaskLabel(t), done:!!t.done})),
+        collapse: !(newStatus==="已读完" || newStatus==="搁置")
+    }
+    data.months[mid].books.push(bookObj);
+    saveLocal();
+    //清空表单
+    document.getElementById(`addBookName${mid}`).value="";
+    document.getElementById(`addBookAuthor${mid}`).value="";
+    document.getElementById(`addBookTranslator${mid}`).value="";
+    document.getElementById(`addCoverUrl${mid}`).value="";
+    renderCoverPreview(mid);
+    document.getElementById(`addTagSelect${mid}`).selectedIndex = 0;
+    document.getElementById(`addTagCustom${mid}`).value="";
+    document.getElementById(`addBookType${mid}`).value="";
+    document.getElementById(`addTotalPage${mid}`).value="";
+    document.getElementById(`addReadPage${mid}`).value="";
+    document.getElementById(`addPlanStart${mid}`).value="";
+    document.getElementById(`addPlanEnd${mid}`).value="";
+    document.getElementById(`enableDailyPlan${mid}`).checked=false;
+    document.getElementById(`addReadTime${mid}`).value="";
+    document.getElementById(`addBookReview${mid}`).value="";
+    document.getElementById(`addTaskDate${mid}`).value="";
+    document.getElementById(`addTaskPages${mid}`).value="";
+    draftTasks[mid] = [];
+    renderDraftTasks(mid);
+}
+
+//周复盘自动生成标题
+function autoWeekTitle(mid){
+    const s = document.getElementById(`weekStart${mid}`).value;
+    const e = document.getElementById(`weekEnd${mid}`).value;
+    if(s && e){
+        const t = s.replace(/-/g,"") + "-" + e.replace(/-/g,"") + " 周度复盘";
+        document.getElementById(`weekTitle${mid}`).value = t;
+    }
+}
+function addWeekLog(mid){
+    const title = document.getElementById(`weekTitle${mid}`).value.trim();
+    if(!title) return alert("请确认复盘标题");
+    data.months[mid].weeks.push({
+        title,
+        time:document.getElementById(`weekTime${mid}`).value,
+        content:document.getElementById(`weekContent${mid}`).value,
+        collapse:true
+    })
+    saveLocal();
+    document.getElementById(`weekTitle${mid}`).value="";
+    document.getElementById(`weekTime${mid}`).value="";
+    document.getElementById(`weekContent${mid}`).value="";
+    document.getElementById(`weekStart${mid}`).value="";
+    document.getElementById(`weekEnd${mid}`).value="";
+}
+function toggleWeekCollapse(mid,widx){
+    data.months[mid].weeks[widx].collapse = !data.months[mid].weeks[widx].collapse;
+    saveLocal();
+}
+function updateWeekField(mid,widx,key,val){
+    data.months[mid].weeks[widx][key] = val;
+    saveLocal();
+}
+function delWeekLog(mid,widx){
+    data.months[mid].weeks.splice(widx,1);
+    saveLocal();
+}
+
+//搁置列表
+function renderShelveList(){
+    const wrap = document.getElementById("shelveList");
+    wrap.innerHTML="";
+    data.shelveBooks.forEach((bk,idx)=>{
+        const div = document.createElement("div");
+        div.style.cssText="padding:8px 0;border-bottom:1px solid #eee";
+        div.innerHTML=`
+        <div><strong>${esc(bk.name)}</strong></div>
+        <div class="tip">搁置原因：${esc(bk.reason)}</div>
+        <div class="tip">状态：${esc(bk.status)}｜季度核对：${esc(bk.quarterCheck)}</div>
+        <button class="secondary" onclick="delShelve(${idx})">删除</button>`;
+        wrap.appendChild(div);
+    })
+}
+function addShelveBook(){
+    const name = document.getElementById("shelveBookName").value.trim();
+    if(!name) return;
+    data.shelveBooks.push({
+        name,
+        reason:document.getElementById("shelveReason").value,
+        status:document.getElementById("shelveStatus").value,
+        quarterCheck:document.getElementById("shelveQuarterCheck").value
+    })
+    saveLocal();
+    document.getElementById("shelveBookName").value="";
+    document.getElementById("shelveReason").value="";
+}
+function delShelve(idx){
+    if(!confirm("确定删除这条搁置记录？"))return;
+    data.shelveBooks.splice(idx,1);
+    saveLocal();
+}
+
+//添加表单实时进度预览
+function renderAddProgress(mid){
+    const total = Number(document.getElementById(`addTotalPage${mid}`).value)||0;
+    const read = Number(document.getElementById(`addReadPage${mid}`).value)||0;
+    const fill = document.getElementById(`addProgressFill${mid}`);
+    const tip = document.getElementById(`addProgressTip${mid}`);
+    if(!fill || !tip) return;
+    if(total>0){
+        const pct = Math.min(100, Math.round(read/total*100));
+        fill.style.width = pct+"%";
+        tip.textContent = `阅读进度：${pct}%（已读 ${read} / ${total} 页）`;
+    }else{
+        fill.style.width = "0%";
+        tip.textContent = "阅读进度：—（填写总页数后自动计算）";
+    }
+}
+
+//封面预览与搜索
+function renderCoverPreview(mid){
+    const wrap = document.getElementById(`addCoverPreview${mid}`);
+    if(!wrap) return;
+    const url = document.getElementById(`addCoverUrl${mid}`).value.trim();
+    if(url){
+        wrap.innerHTML = `<img src="${esc(url)}" style="width:60px;height:84px;object-fit:cover;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.15);" onerror="this.parentNode.innerHTML='<span class=&quot;tip&quot;>图片加载失败，请检查链接</span>'">`;
+    }else{
+        wrap.innerHTML = `<div style="width:60px;height:84px;border-radius:6px;background:linear-gradient(135deg,#e0e7ff,#f0f4ff);display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:12px;">封面</div>`;
+    }
+}
+function searchCover(mid){
+    const name = document.getElementById(`addBookName${mid}`).value.trim();
+    if(!name){ alert("请先填写书名"); return; }
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = "搜索中...";
+    fetch(`https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(name)}&maxResults=1`)
+        .then(r=>r.json())
+        .then(d=>{
+            const vi = d.items && d.items[0] && d.items[0].volumeInfo;
+            const img = vi && vi.imageLinks && (vi.imageLinks.thumbnail || vi.imageLinks.smallThumbnail);
+            if(img){
+                document.getElementById(`addCoverUrl${mid}`).value = img;
+                renderCoverPreview(mid);
+                btn.textContent = "搜索封面";
+            }else{
+                btn.textContent = "未找到，可手动填链接";
+            }
+            btn.disabled = false;
+        })
+        .catch(()=>{
+            btn.textContent = "搜索失败，请手动填";
+            btn.disabled = false;
+        });
+}
+
+//导出 Markdown（Obsidian）
+function exportMarkdown(){
+    const lines = [];
+    lines.push("# 📖 橘仔阅读记录导出");
+    lines.push("");
+    lines.push(`> **阶段**：${data.phase.name||"—"} ｜ **目标**：${data.phase.target} 本 ｜ **已完成**：${data.phase.finished} 本`);
+    lines.push(`> 导出时间：${new Date().toLocaleString("zh-CN")}`);
+    lines.push("");
+    const allBooks = data.months.flatMap(m=>m.books||[]);
+    const finished = allBooks.filter(b=>b.status==="已读完").length;
+    const reading = allBooks.filter(b=>b.status==="在读").length;
+    const planned = allBooks.filter(b=>b.status==="计划中").length;
+    const shelved = allBooks.filter(b=>b.status==="搁置").length;
+    lines.push("## 📊 阶段统计");
+    lines.push("");
+    lines.push(`| 书籍总数 | 已读完 | 在读 | 计划中 | 搁置 |`);
+    lines.push(`| --- | --- | --- | --- | --- |`);
+    lines.push(`| ${allBooks.length} | ${finished} | ${reading} | ${planned} | ${shelved} |`);
+    lines.push("");
+    data.months.forEach((m)=>{
+        lines.push(`## 📅 ${m.name}`);
+        lines.push("");
+        lines.push(`阅读模式：${m.readMode==="theme" ? "主题阅读" + (m.theme?`（${m.theme}）`:"") : "自由阅读"}`);
+        lines.push("");
+        const books = m.books||[];
+        if(!books.length){
+            lines.push("（本月暂无书籍）");
+            lines.push("");
+        }else{
+            lines.push("### 书籍清单");
+            lines.push("");
+            lines.push(`| 书名 | 作者 | 状态 | 类型 | 标签 | 进度 | 时长 |`);
+            lines.push(`| --- | --- | --- | --- | --- | --- | --- |`);
+            books.forEach(b=>{
+                const tp = Number(b.totalPage)||0;
+                const rp = Number(b.readPage)||0;
+                const pct = tp>0 ? Math.round(rp/tp*100)+"%" : "—";
+                const cell = s=>String(s==null?"":s).replace(/\|/g,"\\|");
+                lines.push(`| ${cell(b.name)} | ${cell(b.author)} | ${cell(b.status)} | ${cell(b.bookType)} | ${cell(b.tags)} | ${pct} | ${cell(b.readTime)||"—"} |`);
+            });
+            lines.push("");
+        }
+        if(m.weeks && m.weeks.length){
+            lines.push("### 周复盘");
+            lines.push("");
+            m.weeks.forEach(w=>{
+                lines.push(`**${w.title}**${w.time?`（时长：${w.time}）`:""}`);
+                if(w.content) lines.push(w.content);
+                lines.push("");
+            });
+        }
+        if(m.review){
+            lines.push("### 月度复盘");
+            lines.push("");
+            lines.push(m.review);
+            lines.push("");
+        }
+    });
+    if(data.shelveBooks && data.shelveBooks.length){
+        lines.push("## ⏸️ 搁置书籍");
+        lines.push("");
+        data.shelveBooks.forEach(b=>{
+            lines.push(`- **${b.name}**（${b.status}）— ${b.reason||""}｜季度核对：${b.quarterCheck||"否"}`);
+        });
+        lines.push("");
+    }
+    const blob = new Blob([lines.join("\n")],{type:"text/markdown;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `橘仔阅读记录-${data.phase.name||"导出"}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+//导出单本书（Obsidian）
+function exportBookMarkdown(mid,bidx){
+    const m = data.months[mid];
+    const b = m && m.books[bidx];
+    if(!b) return;
+    const lines = [];
+    lines.push(`# 📖 ${b.name}`);
+    lines.push("");
+    const meta = [];
+    if(b.author) meta.push(`作者：${b.author}`);
+    if(b.translator) meta.push(`译者：${b.translator}`);
+    meta.push(`状态：${b.status}`);
+    if(b.bookType) meta.push(`类型：${b.bookType}`);
+    if(b.tags) meta.push(`标签：${b.tags}`);
+    meta.push(`所属：${m.name}`);
+    const tp = Number(b.totalPage)||0;
+    const rp = Number(b.readPage)||0;
+    meta.push(`进度：${rp}/${tp} 页${tp>0?`（${Math.round(rp/tp*100)}%）`:""}`);
+    if(b.planStart) meta.push(`开始：${b.planStart}`);
+    if(b.planEnd) meta.push(`结束：${b.planEnd}`);
+    if(b.readTime) meta.push(`时长：${b.readTime}`);
+    lines.push(`> ${meta.join(" ｜ ")}`);
+    lines.push("");
+    if(b.dailyTasks && b.dailyTasks.length){
+        lines.push("## 阅读小任务");
+        lines.push("");
+        b.dailyTasks.forEach(t=>{
+            lines.push(`- [${t.done?"x":" "}] ${t.content}`);
+        });
+        lines.push("");
+    }
+    if(b.review){
+        lines.push("## 读后评价");
+        lines.push("");
+        lines.push(b.review);
+        lines.push("");
+    }
+    const blob = new Blob([lines.join("\n")],{type:"text/markdown;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${b.name||"书籍"}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+//导入导出
+function exportData(){
+    const blob = new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "橘仔阅读记录备份.json";
+    a.click();
+    URL.revokeObjectURL(url);
+}
+function importData(){
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept='.json';
+    input.onchange = e=>{
+        const f = e.target.files[0];
+        const r = new FileReader();
+        r.onload = res=>{
+            try{
+                data = normalizeData(JSON.parse(res.target.result));
+                saveLocal();
+                alert("导入成功");
+            }catch(err){
+                alert("文件解析失败");
+            }
+        }
+        r.readAsText(f);
+    }
+    input.click();
+}
+
+//阶段目标自动保存
+["phaseName","phaseTargetBook","phaseFinishedBook"].forEach(id=>{
+    const el = document.getElementById(id);
+    el.addEventListener("input",()=>{
+        if(id==="phaseName") data.phase.name = el.value;
+        if(id==="phaseTargetBook") data.phase.target = Number(el.value||0);
+        if(id==="phaseFinishedBook") data.phase.finished = Number(el.value||0);
+        saveLocal();
+    })
+})
+
+//全局搜索书籍
+document.getElementById("globalSearchInput").addEventListener("input", function(){
+    const kw = this.value.trim().toLowerCase();
+    const result = document.getElementById("globalSearchResult");
+    if(!kw){ result.innerHTML = ""; return; }
+    const hits = [];
+    data.months.forEach((m,mid)=>{
+        (m.books||[]).forEach((b,bidx)=>{
+            const hay = ((b.name||"")+" "+(b.tags||"")).toLowerCase();
+            if(hay.includes(kw)) hits.push({mid,bidx,b,m});
+        });
+    });
+    if(!hits.length){
+        result.innerHTML = "<div class='tip'>未找到匹配书籍，换个关键词试试</div>";
+        return;
+    }
+    result.innerHTML = hits.map(h=>
+        `<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #eef2f7;">
+            <div><strong>${esc(h.b.name)}</strong> ｜ ${esc(h.b.status)} ｜ 所属：${esc(h.m.name)}</div>
+            <button class="secondary" style="padding:2px 10px;font-size:12px;flex-shrink:0" onclick="jumpToBook(${h.mid},${h.bidx})">定位</button>
+        </div>`).join("");
+});
+function jumpToBook(mid,bidx){
+    const m = data.months[mid];
+    if(!m) return;
+    m.collapse = false;
+    const b = m.books[bidx];
+    if(b) b.collapse = false;
+    saveLocal();
+    requestAnimationFrame(()=>{
+        const el = document.getElementById(`bookCard-${mid}-${bidx}`);
+        if(el) el.scrollIntoView({behavior:"smooth",block:"start"});
+    });
+}
+
+renderAll();
+
+// ===== 底部导航：跳转 + 高亮 =====
+function navTo(key){
+    let el = null;
+    if(key==='top'){ el = document.querySelector('header'); }
+    else if(key==='month'){ el = document.querySelector('.month-body') || document.querySelector('.month-header'); }
+    else if(key==='book'){ el = document.querySelector('.book-collapse') || document.querySelector('.month-body'); }
+    else if(key==='review'){ el = document.querySelector('.week-collapse') || document.querySelector('.review-title') || document.querySelector('.month-body'); }
+    else if(key==='shelve'){ el = document.getElementById('shelve-section'); }
+    if(el){
+        const top = Math.max(0, el.getBoundingClientRect().top + window.scrollY - 10);
+        window.scrollTo(0, top);
+        updateNavHighlight();
+    }
+}
+document.querySelectorAll('.nav-item').forEach(btn=>{
+    btn.addEventListener('click', ()=>navTo(btn.dataset.target));
+});
+function updateNavHighlight(){
+    const marks = [
+        {k:'top', el:document.querySelector('header')},
+        {k:'month', el:document.querySelector('.month-body')},
+        {k:'book', el:document.querySelector('.book-collapse')},
+        {k:'review', el:document.querySelector('.week-collapse') || document.querySelector('.review-title')},
+        {k:'shelve', el:document.getElementById('shelve-section')}
+    ];
+    let best = 'top', bestDist = Infinity;
+    for(const m of marks){
+        if(!m.el) continue;
+        const r = m.el.getBoundingClientRect();
+        if(r.bottom < 0 || r.top > window.innerHeight) continue;
+        const dist = Math.abs(r.top);
+        if(dist < bestDist){ bestDist = dist; best = m.k; }
+    }
+    document.querySelectorAll('.nav-item').forEach(b=>{
+        b.classList.toggle('active', b.dataset.target===best);
+    });
+}
+window.addEventListener('scroll', updateNavHighlight, {passive:true});
+window.addEventListener('resize', updateNavHighlight, {passive:true});
+setTimeout(updateNavHighlight, 500);
+</script>
+</body>
+</html>
